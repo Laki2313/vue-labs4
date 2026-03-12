@@ -2,6 +2,7 @@
   <div class="container">
     <h1>Список продуктів</h1>
 
+    <!-- Додавання продукту -->
     <div class="controls">
       <input v-model="newTitle" placeholder="Введіть назву продукту" />
 
@@ -15,9 +16,31 @@
       </button>
     </div>
 
+    <!-- Фільтр -->
+    <div class="filter">
+      <label>Фільтр:</label>
+
+      <select v-model="filter">
+        <option value="all">Всі</option>
+        <option value="A">Категорія A</option>
+        <option value="B">Категорія B</option>
+      </select>
+    </div>
+
+    <!-- Лічильник -->
+    <p class="counter">
+      Показано {{ filteredProducts.length }} із {{ products.length }}
+    </p>
+
+    <!-- Якщо нічого не знайдено -->
+    <p v-if="filteredProducts.length === 0" class="empty">
+      Нічого не знайдено
+    </p>
+
+    <!-- Список -->
     <ul class="product-list">
       <li
-        v-for="p in products"
+        v-for="p in filteredProducts"
         :key="p.id"
         :class="['product-item', { highlight: p.category === 'A' }]"
       >
@@ -42,12 +65,23 @@ export default {
     return {
       newTitle: "",
       newCategory: "A",
+      filter: "all",
 
       products: [
         { id: 1, title: "Ноутбук", category: "A" },
         { id: 2, title: "Мишка", category: "B" },
         { id: 3, title: "Клавіатура", category: "A" }
       ]
+    }
+  },
+
+  computed: {
+    filteredProducts() {
+      if (this.filter === "all") {
+        return this.products
+      }
+
+      return this.products.filter(p => p.category === this.filter)
     }
   },
 
@@ -77,14 +111,14 @@ body{
   background:#f4f6f9;
 }
 
-.container {
-  max-width: 600px;
-  margin: 40px auto;
-  font-family: Arial, Helvetica, sans-serif;
-  background: white;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+.container{
+  max-width:600px;
+  margin:40px auto;
+  font-family:Arial;
+  background:white;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
 h1{
@@ -95,10 +129,10 @@ h1{
 .controls{
   display:flex;
   gap:10px;
-  margin-bottom:20px;
+  margin-bottom:15px;
 }
 
-input, select{
+input,select{
   padding:8px;
   border:1px solid #ccc;
   border-radius:6px;
@@ -115,6 +149,20 @@ input, select{
 
 .add-btn:hover{
   background:#45a049;
+}
+
+.filter{
+  margin-bottom:10px;
+}
+
+.counter{
+  color:#666;
+  margin-bottom:10px;
+}
+
+.empty{
+  color:red;
+  font-weight:bold;
 }
 
 .product-list{
@@ -158,3 +206,4 @@ input, select{
   background:#c0392b;
 }
 </style>
+
